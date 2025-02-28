@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A simple and elegant To-Do List web application." />
+    <title>To-Do List App</title>
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+     <!-- New Quote Generator Container -->
+    <div class="container quote-container">
+      <div class="quote-content">
+        <p id="quoteText">Click "New Quote" to fetch a random quote.</p>
+        <p id="quoteAuthor"></p>
+      </div>
+      <div class="quote-buttons">
+       <button id="newQuoteButton" class="btn"><i class="fas fa-sync-alt"></i> New Quote</button>
+       <button id="copyQuoteButton" class="btn"><i class="fas fa-copy"></i> Copy to Clipboard</button>
+      </div>
+    </div>
+    <div class="container">
+      <!-- Header with Dark/Light Mode Toggle -->
+      <div class="header">
+        <h1>To-Do List</h1>
+        <button id="modeToggle" class="btn"><span id="modeIcon">🌙</span></button>
+      </div>
+
+
+      <!-- Analytics Summary -->
+      <div id="analytics" class="analytics-summary"></div>
+
+      <!-- Search Section -->
+      <div class="search-section">
+        <input type="text" id="searchInput" placeholder="Search tasks..." />
+      </div>
+
+      <!-- Task Input Section -->
+      <div class="input-section">
+        <input type="text" id="taskInput" placeholder="Enter a new task" />
+        <input type="date" id="dueDateInput" title="Due Date" />
+        <select id="prioritySelect" title="Priority">
+          <option value="low" style="color: #902cee;">█ Low</option>
+          <option value="medium" selected style="color: #6d22b3;">█ Medium</option>
+          <option value="high" style="color: #41136b;">█ High</option>
+        </select>
+        <!-- Category input -->
+        <input type="text" id="categoryInput" placeholder="Category (optional)" />
+        <!-- Tags input -->
+        <input type="text" id="tagsInput" placeholder="Tags (comma separated)" />
+        <!-- Recurring select -->
+        <select id="recurringSelect" title="Recurring">
+          <option value="None" selected>Recurring: None</option>
+          <option value="Daily">Daily</option>
+          <option value="Weekly">Weekly</option>
+          <option value="Monthly">Monthly</option>
+        </select>
+        <button id="addTaskButton" class="btn"><i class="fas fa-plus"></i> Add Task</button>
+      </div>
+
+      <!-- Controls Section -->
+      <!-- Move the "Enter Bulk Mode" button beside the "Undo" button -->
+      <div class="controls">
+        <div id="normalControls">
+          <select id="sortSelect">
+            <option value="none">Sort: None</option>
+            <option value="dueDate">Sort: Due Date</option>
+            <option value="priority">Sort: Priority</option>
+            <option value="category">Sort: Category</option>
+            <option value="lastUpdated">Sort: Last Updated</option>
+            <option value="createdAt">Sort: Created Date</option>
+          </select>
+          <select id="priorityFilter">
+            <option value="all">All Priorities</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+          <!-- Tag Filter -->
+          <select id="tagFilter">
+            <option value="all">All Tags</option>
+          </select>
+
+          <button id="undoButton" class="btn"><i class="fas fa-undo"></i> Undo</button>
+          <button id="bulkModeToggle" class="btn"><i class="fas fa-edit"></i> Enter Bulk Mode</button>
+          <button id="markAllCompleted" class="btn"><i class="fas fa-check-double"></i> Mark All as Completed</button> <!-- Moved here -->
+          <div id="taskCounter">0 of 0 tasks completed</div>
+          <div id="progressBarContainer">
+            <div id="progressBar"></div>
+          </div>
+        </div>
+        <div id="bulkControls" style="display: none;">
+          <input type="checkbox" id="selectAllCheckbox" />
+          <label for="selectAllCheckbox">Select All</label>
+          <button id="bulkDelete" class="btn"><i class="fas fa-trash"></i> Bulk Delete Selected</button>
+          <button id="clearAll" class="btn"><i class="fas fa-trash-alt"></i> Clear All Tasks</button>
+          <button id="bulkModeToggleExit" class="btn"><i class="fas fa-times"></i> Exit Bulk Mode</button>
+        </div>
+      </div>
+
+      <!-- View Container: Task List or Calendar View -->
+      <div id="viewContainer">
+        <ul id="taskList"></ul>
+        <div id="calendarView" style="display: none;"></div>
+      </div>
+
+      <!-- Footer (Filters) -->
+      <div class="footer">
+        <div class="filters">
+          <button id="filterAll" class="filter-btn active">All</button>
+          <button id="filterActive" class="filter-btn">Active</button>
+          <button id="filterCompleted" class="filter-btn">Completed</button>
+          <button id="filterArchived" class="filter-btn">Archived</button>
+        </div>
+        <button id="clearCompleted" class="btn"><i class="fas fa-trash"></i> Clear Completed</button>
+      </div>
+
+      <!-- Bottom Actions Group -->
+      <div id="bottomActions">
+        <button id="exportTasks" class="btn"><i class="fas fa-file-export"></i> JSON</button>
+        <button id="exportCSV" class="btn"><i class="fas fa-file-csv"></i> CSV</button>
+        <button id="importTasks" class="btn"><i class="fas fa-file-import"></i> Import</button>
+        <input type="file" id="importFile" style="display: none;" />
+        <button id="toggleCalendar" class="btn"><i class="fas fa-calendar-alt"></i></button>
+        <button id="printTasks" class="btn"><i class="fas fa-print"></i></button>
+        <button id="helpButton" class="btn"><i class="fas fa-question-circle"></i></button>
+      </div>
+    </div>
+
+    <!-- Comments Modal -->
+    <div id="commentsModal" class="modal">
+      <div class="modal-content" id="commentsModalContent">
+        <span id="closeCommentsModal" class="close">&times;</span>
+        <h2>Task Comments</h2>
+        <div id="commentsView" class="comments-view"></div>
+        <textarea id="commentInput" class="comment-input" placeholder="Add a comment..."></textarea>
+        <div class="comment-modal-buttons">
+          <button id="addCommentButton" class="btn"><i class="fas fa-comment"></i> Add Comment</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="modal">
+      <div class="modal-content" id="historyModalContent">
+        <span id="closeHistoryModal" class="close">&times;</span>
+        <h2>Task History</h2>
+        <div id="historyView" class="history-view"></div>
+        <div class="history-modal-buttons">
+          <button id="clearHistoryButton" class="btn"><i class="fas fa-trash"></i> Clear History</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+      <div class="modal-content" id="helpModalContent">
+        <span id="closeHelpModal" class="close">&times;</span>
+        <h2>Help & Instructions</h2>
+        <p><strong>Adding Tasks:</strong> Fill in the task details (name, due date, priority, optional category, tags, recurring) and click "Add Task".</p>
+
+      </div>
+    </div>
+    <div class="container music-player-container">
+      <audio id="musicPlayer" src="assets/audio/song.mp3" loop></audio>
+      <div class="music-controls">
+        <!-- <span class="music-icon">🎵</span> -->
+        <button id="playPauseButton" class="btn"><i class="fas fa-play"></i></button>
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+      </div>
+      
+    </div>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>
