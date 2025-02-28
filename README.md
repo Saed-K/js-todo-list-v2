@@ -1,7 +1,7 @@
-# To-Do List App ![Background Image](assets/images/favicon.ico)
-
+# To-Do List App 
 
 ![Background Image](assets/images/Dark.jpg)
+
 ![Background Image](assets/images/Light.jpg)
 
 ## Overview
